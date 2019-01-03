@@ -1,6 +1,7 @@
-.PHONY: default
+.PHONY: run deps
 
-default:
+run:
+	python tsukemen-alert.py
 
-install-deps:
+deps:
 	pip install -r requirements.txt
