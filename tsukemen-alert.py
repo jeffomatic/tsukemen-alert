@@ -1,5 +1,6 @@
 import calendar
 import datetime
+import json
 import PyPDF2
 import re
 import os
@@ -21,6 +22,21 @@ class EphemeralFile:
 def fetch(url):
     path, _ = urllib.request.urlretrieve(url)
     return EphemeralFile(path)
+
+
+def load_config():
+    path = os.path.join(os.path.dirname(__file__), 'config.json')
+    config = {'SLACK_API_TOKEN': ''}
+    if os.path.exists(path):
+        with open(path) as encoded:
+            data = json.load(encoded)
+            for k, v in config.items():
+                config[k] = data[k]
+    else:
+        for k, v in config.items():
+            config[k] = os.environ[k]
+
+    return config
 
 
 # calendar.month_name is 1-indexed
@@ -89,8 +105,8 @@ def perform_fetch():
     print("%s: %s" % (date, msg))
 
 
-token = ''
-sc = slackclient.SlackClient(token)
+config = load_config()
+sc = slackclient.SlackClient(config['SLACK_API_TOKEN'])
 channels = list(
     filter(lambda c: c['is_member'],
            sc.api_call('conversations.list')['channels']))
