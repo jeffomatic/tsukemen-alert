@@ -1,30 +1,30 @@
-import calendar
 import datetime
 import fitz as pymupdf  # PyMuPDF
 import json
 import re
 import os
 import slackclient
+from typing import List, Dict, Optional
 import urllib.request
 
 
 class EphemeralFile:
-    def __init__(self, path):
+    def __init__(self, path: str):
         self.path = path
 
-    def __enter__(self):
+    def __enter__(self) -> str:
         return self.path
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         os.remove(self.path)
 
 
-def fetch(url):
+def fetch(url: str) -> EphemeralFile:
     path, _ = urllib.request.urlretrieve(url)
     return EphemeralFile(path)
 
 
-def load_config():
+def load_config() -> Dict[str, str]:
     path = os.path.join(os.path.dirname(__file__), 'config.json')
     config = {'SLACK_API_TOKEN': ''}
     if os.path.exists(path):
@@ -48,7 +48,7 @@ month_patterns = [
 ]
 
 
-def guess_year(month):
+def guess_year(month: int) -> int:
     now = datetime.datetime.now()
     cur = now.month
 
@@ -61,7 +61,7 @@ def guess_year(month):
     return now.year
 
 
-def parse_date(lines):
+def parse_date(lines: List[str]) -> Optional[datetime.date]:
     def get_month_and_line():
         for i, line in enumerate(lines):
             for m, pat in enumerate(month_patterns):
@@ -89,14 +89,14 @@ def parse_date(lines):
     return datetime.date(year, month, day)
 
 
-def has_substr(lines, substr):
+def has_substr(lines: List[str], substr: str) -> bool:
     for line in lines:
         if line in substr:
             return True
     return False
 
 
-def perform_fetch(url):
+def perform_fetch(url: str) -> None:
     lines = []
     with fetch(url) as path:
         pdf = pymupdf.open(path)
