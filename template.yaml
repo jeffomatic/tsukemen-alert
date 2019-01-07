@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Ramen Shop Tsukemen Alert
+Globals:
+    Function:
+        Timeout: 30
+Resources:
+    TsukemenAlertFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: tsukemen_alert/
+            Handler: tsukemen_alert.lambda_handler
+            Runtime: python3.7

@@ -1,2 +1,3 @@
+boto3==1.9.74
 PyMuPDF==1.14.4
 slackclient==1.3.0
