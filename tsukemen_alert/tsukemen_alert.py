@@ -119,7 +119,7 @@ def parse_date(lines: List[str]) -> Optional[datetime.date]:
 
 def has_substr(lines: List[str], substr: str) -> bool:
     for line in lines:
-        if line in substr:
+        if substr in line:
             return True
     return False
 
